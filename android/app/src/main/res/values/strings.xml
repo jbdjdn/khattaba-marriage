@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">خطابة لزواج</string>
+    <string name="title_activity_main">خطابة لزواج</string>
+    <string name="package_name">com.khattaba.marriage</string>
+    <string name="custom_url_scheme">com.khattaba.marriage</string>
+</resources>

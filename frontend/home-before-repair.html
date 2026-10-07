@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اكتشف - خطابة لزواج</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<div class="app member-app">
+
+    <header class="member-header">
+        <div>
+            <div class="brand">💍 خطابة لزواج</div>
+            <p id="welcomeText">مرحبًا بك</p>
+        </div>
+
+        <button id="logoutButton" class="icon-button" type="button">
+            خروج
+        </button>
+    </header>
+
+    <main class="member-content">
+
+        <section class="discover-heading">
+            <span class="section-kicker">اكتشف</span>
+            <h1>مقترحات مناسبة لك</h1>
+            <p>
+                تعرّف على أشخاص يبحثون عن زواج جاد ومحترم.
+            </p>
+        </section>
+
+        <!-- المقترح الحالي -->
+        <section id="suggestionArea">
+
+            <div class="empty-suggestions" id="loadingBox">
+
+                <div class="empty-icon">⏳</div>
+
+                <h2>جاري تحميل المقترحات</h2>
+
+                <p>
+                    لحظات ونبحث لك عن الحسابات المناسبة.
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <nav class="bottom-nav">
+
+        <a href="home.html" class="nav-item active">
+            <span>✨</span>
+            <small>اكتشف</small>
+        </a>
+
+        <a href="search.html" class="nav-item">
+            <span>🔎</span>
+            <small>بحث</small>
+        </a>
+
+        <a href="chat.html" class="nav-item">
+            <span>💬</span>
+            <small>دردشة</small>
+        </a>
+
+        <a href="about-me.html" class="nav-item">
+            <span>📝</span>
+            <small>تعريفي</small>
+        </a>
+
+        <a href="profile.html" class="nav-item">
+            <span>👤</span>
+            <small>ملفي</small>
+        </a>
+
+    </nav>
+
+</div>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", async () => {
+
+    const token = localStorage.getItem("session_token");
+
+    if (!token) {
+        window.location.href = "index.html";
+        return;
+    }
+
+    try {
+
+        /* =========================
+           المستخدم الحالي
+        ========================= */
+
+        const meResponse = await fetch("/api/me", {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        const meResult = await meResponse.json();
+
+        if (!meResponse.ok || !meResult.success) {
+
+            localStorage.removeItem("session_token");
+            localStorage.removeItem("current_user");
+
+            window.location.href = "index.html";
+            return;
+        }
+
+        const user = meResult.user;
+
+        document.getElementById("welcomeText").textContent =
+            `مرحبًا ${user.first_name}`;
+
+
+
+
+
+
+
+        localStorage.setItem(
+            "current_user",
+            JSON.stringify(user)
+        );
+
+
+        /* =========================
+           المقترحات الحقيقية
+        ========================= */
+
+        const discoverResponse = await fetch("/api/discover", {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        const discoverResult =
+            await discoverResponse.json();
+
+        if (
+            !discoverResponse.ok ||
+            !discoverResult.success
+        ) {
+
+            showMessage(
+                "تعذر تحميل المقترحات",
+                "حدث خطأ أثناء جلب الحسابات."
+            );
+
+            return;
+        }
+
+        console.log("DISCOVER DATA:", discoverResult); renderSuggestions(
+            discoverResult.suggestions
+        );
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        showMessage(
+            "تعذر الاتصال بالسيرفر",
+            "تأكد أن السيرفر يعمل ثم أعد تحميل الصفحة."
+        );
+    }
+
+
+    /* =========================
+       تسجيل الخروج
+    ========================= */
+
+    document.getElementById("logoutButton")
+        .addEventListener("click", async () => {
+
+            try {
+
+                await fetch("/api/logout", {
+                    method: "POST",
+                    headers: {
+                        "Authorization":
+                            `Bearer ${token}`
+                    }
+                });
+
+            } catch (error) {
+                console.error(error);
+            }
+
+            localStorage.removeItem("session_token");
+            localStorage.removeItem("current_user");
+
+            window.location.href = "index.html";
+        });
+
+
+    /* =========================
+       عرض المقترحات
+    ========================= */
+
+    function renderSuggestions(suggestions) {
+
+        const area =
+            document.getElementById("suggestionArea");
+
+        area.innerHTML = "";
+
+        if (!suggestions || suggestions.length === 0) {
+
+            area.innerHTML = `
+                <div class="empty-suggestions">
+
+                    <div class="empty-icon">🤍</div>
+
+                    <h2>لا توجد مقترحات حاليًا</h2>
+
+                    <p>
+                        انتهت المقترحات المتاحة حاليًا
+                        وسيتم تحديث المقترحات لاحقًا.
+                    </p>
+
+                </div>
+            `;
+
+            return;
+        }
+
+
+        const person = suggestions[0];
+
+        const profileUrl =
+            `profile-view.html?id=${encodeURIComponent(person.id)}`;
+
+
+        const card =
+            document.createElement("section");
+
+        card.className = "suggestion-card";
+
+
+        card.innerHTML = `
+
+            <a
+                href="${profileUrl}"
+                class="suggestion-photo-link"
+            >
+
+                <div class="suggestion-photo">
+
+                    <img
+                        src="${person.profile_image || ""}"
+                        alt="صورة ${escapeHtml(person.first_name || "")}"
+                    >
+
+                </div>
+
+            </a>
+
+
+            <div class="suggestion-info">
+
+                <a
+                    href="${profileUrl}"
+                    class="suggestion-name-link"
+                >
+
+                    <h2>
+                        ${escapeHtml(person.first_name || "")}
+                        ${escapeHtml(person.last_name || "")}
+                    </h2>
+
+                </a>
+
+
+                <p class="suggestion-location">
+
+                    📍 ${escapeHtml(person.city || "")}
+                    •
+                    ${escapeHtml(person.residence_country || "")}
+
+                </p>
+
+
+                <div class="profile-meta">
+
+                    <span>
+                        🎂 ${person.age} سنة
+                    </span>
+
+                    <span>
+                        📏 ${person.height || "—"} سم
+                    </span>
+
+                    <span>
+                        🕌 ${escapeHtml(person.religion || "—")}
+                    </span>
+
+                </div>
+
+
+                <p class="suggestion-bio">
+
+                    ${escapeHtml(person.about_me || "لم تتم إضافة نبذة بعد.")}
+
+                </p>
+
+
+                <a
+                    href="${profileUrl}"
+                    class="view-profile-button"
+                >
+                    👤 عرض الملف الكامل
+                </a>
+
+
+                <div class="quick-actions">
+
+                    <button
+                        class="member-action primary-action"
+                        type="button"
+                        onclick="contactPerson(${person.id})"
+                    >
+                        💌 تواصل
+                    </button>
+
+
+                    <button
+                        class="member-action"
+                        type="button"
+                        onclick="skipPerson()"
+                    >
+                        ❌ تخطي
+                    </button>
+
+
+                    <button
+                        class="member-action"
+                        type="button"
+                        onclick="undoPerson()"
+                    >
+                        ↩️ تراجع
+                    </button>
+
+
+                    <button
+                        class="member-action boost-action"
+                        type="button"
+                        onclick="boostPerson()"
+                    >
+                        🚀 تعزيز
+                    </button>
+
+                </div>
+
+            </div>
+        `;
+
+
+        area.appendChild(card);
+    }
+
+
+    function showMessage(title, text) {
+
+        document.getElementById("suggestionArea")
+            .innerHTML = `
+
+            <div class="empty-suggestions">
+
+                <div class="empty-icon">⚠️</div>
+
+                <h2>${title}</h2>
+
+                <p>${text}</p>
+
+            </div>
+        `;
+    }
+
+
+    function calculateAge(birthDate) {
+
+        const birth = new Date(birthDate);
+        const today = new Date();
+
+        let age =
+            today.getFullYear() -
+            birth.getFullYear();
+
+        const month =
+            today.getMonth() -
+            birth.getMonth();
+
+        if (
+            month < 0 ||
+            (
+                month === 0 &&
+                today.getDate() < birth.getDate()
+            )
+        ) {
+            age--;
+        }
+
+        return age;
+    }
+
+
+    function escapeHtml(value) {
+
+        return String(value)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    }
+
+});
+
+
+/* =========================
+   الأزرار مؤقتًا
+========================= */
+
+function contactPerson(id) {
+
+    alert(
+        "سيتم فتح نظام التواصل مع هذا الشخص لاحقًا."
+    );
+}
+
+function skipPerson() {
+
+    alert(
+        "سيتم بناء نظام التخطي وحفظه في قاعدة البيانات لاحقًا."
+    );
+}
+
+function undoPerson() {
+
+    alert(
+        "سيتم بناء نظام التراجع لاحقًا."
+    );
+}
+
+function boostPerson() {
+
+    alert(
+        "سيتم بناء نظام التعزيز لاحقًا."
+    );
+}
+
+</script>
+
+</body>
+</html>

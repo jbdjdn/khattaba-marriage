@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مراجعة البيانات - خطابة لزواج</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+.review-page{min-height:100vh;padding:18px 16px 35px}
+.review-header{display:flex;align-items:center;gap:14px;margin-bottom:24px}
+.review-back{width:44px;height:44px;border-radius:15px;background:#fff;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--primary-dark);text-decoration:none;font-size:27px;box-shadow:0 6px 18px rgba(90,63,43,.07)}
+.review-brand{flex:1}
+.review-brand strong{display:block;font-size:20px;color:var(--primary-dark)}
+.review-brand span{font-size:12px;color:var(--muted)}
+.progress{height:6px;background:#e9dfd5;border-radius:20px;overflow:hidden;margin:0 2px 28px}
+.progress i{display:block;width:100%;height:100%;background:linear-gradient(90deg,var(--gold),var(--primary));border-radius:20px}
+.review-title{text-align:center;margin-bottom:22px}
+.review-title .check{width:62px;height:62px;border-radius:22px;margin:0 auto 14px;background:rgba(180,138,106,.12);display:flex;align-items:center;justify-content:center;font-size:29px}
+.review-title h1{font-size:29px;margin-bottom:6px;color:var(--text)}
+.review-title p{font-size:14px;color:var(--muted);line-height:1.7}
+.profile-card{background:rgba(255,255,255,.78);border:1px solid var(--border);border-radius:28px;padding:20px;box-shadow:0 12px 30px rgba(90,63,43,.07);margin-bottom:15px}
+.profile-head{text-align:center;padding-bottom:18px;border-bottom:1px solid var(--border)}
+.profile-photo{width:112px;height:112px;border-radius:50%;object-fit:cover;border:4px solid #fff;outline:2px solid rgba(180,138,106,.35);box-shadow:0 10px 25px rgba(90,63,43,.14)}
+.profile-head h2{font-size:22px;margin-top:12px}
+.profile-head p{color:var(--muted);font-size:13px;margin-top:3px}
+.data-title{font-size:15px;color:var(--primary-dark);margin:19px 0 10px;font-weight:700}
+.data-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.data-item{background:var(--surface-2);border-radius:16px;padding:11px 12px;min-width:0}
+.data-item span{display:block;color:var(--muted);font-size:11px;margin-bottom:4px}
+.data-item strong{display:block;font-size:14px;overflow-wrap:anywhere}
+.text-box{background:var(--surface-2);border-radius:17px;padding:13px;line-height:1.8;font-size:14px;white-space:pre-wrap}
+.notice{display:flex;gap:11px;align-items:flex-start;background:#fff8ed;border:1px solid #ead7b8;border-radius:20px;padding:15px;margin:15px 0}
+.notice-icon{font-size:21px}
+.notice strong{display:block;color:#795b31;margin-bottom:4px}
+.notice p{font-size:12px;color:#806f5f;line-height:1.7}
+.actions{display:flex;flex-direction:column;gap:10px}
+.actions button{width:100%;min-height:54px;border-radius:18px;font-family:inherit;font-size:16px;font-weight:700;cursor:pointer}
+#createAccount{border:0;color:#fff;background:linear-gradient(135deg,var(--primary),var(--primary-dark));box-shadow:0 12px 25px rgba(109,77,53,.22)}
+#createAccount:disabled{opacity:.75;cursor:wait}
+#editData{border:1px solid var(--border);background:#fff;color:var(--primary-dark)}
+.status-message{display:none;margin-top:13px;padding:14px 16px;border-radius:17px;font-size:14px;line-height:1.7;text-align:center;font-weight:700}
+.status-message:not(:empty){display:block}
+.status-message.success{background:#eef8f0;border:1px solid #cce5d1;color:#32663b}
+.status-message.error{background:#fff0f0;border:1px solid #edcaca;color:#9a3d3d}
+@media(max-width:380px){.review-page{padding:15px 12px 28px}.data-grid{grid-template-columns:1fr}.profile-card{padding:16px}.review-title h1{font-size:26px}}
+</style>
+</head>
+<body>
+<div class="app">
+<main class="review-page">
+<header class="review-header">
+<a href="register-photo.html" class="review-back">‹</a>
+<div class="review-brand"><strong>💍 خطابة لزواج</strong><span>إنشاء حساب جديد</span></div>
+</header>
+
+<div class="progress"><i></i></div>
+
+<section class="review-title">
+<div class="check">✓</div>
+<h1>مراجعة حسابك</h1>
+<p>تأكد من بياناتك قبل إنشاء الحساب. يمكنك العودة للتعديل إذا وجدت أي خطأ.</p>
+</section>
+
+<section class="profile-card">
+<div class="profile-head">
+<img id="reviewPhoto" class="profile-photo" alt="الصورة الشخصية">
+<h2 id="reviewName">—</h2>
+<p id="reviewUsername">—</p>
+</div>
+
+<div class="data-title">المعلومات الأساسية</div>
+<div class="data-grid">
+<div class="data-item"><span>الجنس</span><strong id="reviewGender">—</strong></div>
+<div class="data-item"><span>العمر</span><strong id="reviewAge">—</strong></div>
+<div class="data-item"><span>الجنسية</span><strong id="reviewNationality">—</strong></div>
+<div class="data-item"><span>دولة الإقامة</span><strong id="reviewResidence">—</strong></div>
+<div class="data-item"><span>المدينة</span><strong id="reviewCity">—</strong></div>
+<div class="data-item"><span>المذهب</span><strong id="reviewReligion">—</strong></div>
+<div class="data-item"><span>الطول</span><strong id="reviewHeight">—</strong></div>
+<div class="data-item"><span>الوزن</span><strong id="reviewWeight">—</strong></div>
+<div class="data-item"><span>لون البشرة</span><strong id="reviewSkinColor">—</strong></div>
+<div class="data-item"><span>الهاتف</span><strong id="reviewPhone">—</strong></div>
+<div class="data-item" style="grid-column:1/-1"><span>البريد الإلكتروني</span><strong id="reviewEmail">—</strong></div>
+</div>
+
+<div class="data-title">نبذة عنك</div>
+<div class="text-box" id="reviewAbout">—</div>
+
+<div class="data-title">مواصفات شريك الحياة</div>
+<div class="text-box" id="reviewPartner">—</div>
+</section>
+
+<section class="notice">
+<div class="notice-icon">🔒</div>
+<div><strong>قبل إنشاء الحساب</strong><p>تأكد من صحة بياناتك. بعض المعلومات الأساسية مثل رقم الهاتف والبريد الإلكتروني والجنسية ودولة الإقامة لا يمكن تعديلها بعد إنشاء الحساب.</p></div>
+</section>
+
+<div class="actions">
+<button id="createAccount" type="button">إنشاء الحساب</button>
+<button id="editData" type="button">تعديل البيانات</button>
+</div>
+<p id="statusMessage" class="status-message"></p>
+</main>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    const gender = localStorage.getItem("registration_gender");
+    const basic = JSON.parse(
+        localStorage.getItem("registration_basic") || "null"
+    );
+    const account = JSON.parse(
+        localStorage.getItem("registration_account") || "null"
+    );
+
+    if (!gender || !basic || !account) {
+        alert("بيانات التسجيل غير مكتملة");
+        window.location.href = "register.html";
+        return;
+    }
+
+    const genderText = gender === "male" ? "رجل" : "امرأة";
+
+    document.getElementById("reviewPhoto").src = account.profileImage;
+
+    document.getElementById("reviewName").textContent =
+        `${basic.firstName} ${basic.lastName}`;
+
+    document.getElementById("reviewUsername").textContent =
+        `@${basic.username}`;
+
+    document.getElementById("reviewGender").textContent = genderText;
+    document.getElementById("reviewEmail").textContent = basic.email;
+
+    document.getElementById("reviewPhone").textContent =
+        `${basic.phoneCountry} ${basic.phone}`;
+
+    document.getElementById("reviewNationality").textContent =
+        basic.nationality;
+
+    document.getElementById("reviewResidence").textContent =
+        basic.residenceCountry;
+
+    document.getElementById("reviewCity").textContent =
+        basic.city;
+
+    document.getElementById("reviewAge").textContent =
+        `${basic.age} سنة`;
+
+    document.getElementById("reviewHeight").textContent =
+        `${basic.height} سم`;
+
+    document.getElementById("reviewWeight").textContent =
+        `${basic.weight} كجم`;
+
+    document.getElementById("reviewReligion").textContent =
+        basic.religion;
+
+    document.getElementById("reviewSkinColor").textContent =
+        basic.skinColor;
+
+    document.getElementById("reviewAbout").textContent =
+        basic.aboutMe;
+
+    document.getElementById("reviewPartner").textContent =
+        basic.partnerDescription;
+
+
+    document.getElementById("editData").addEventListener("click", () => {
+        window.location.href = "register-basic.html";
+    });
+
+
+    document.getElementById("createAccount").addEventListener("click", async () => {
+
+        const button = document.getElementById("createAccount");
+        const status = document.getElementById("statusMessage");
+
+        button.disabled = true;
+        button.textContent = "جاري إنشاء الحساب...";
+
+        status.textContent = "";
+        status.className = "status-message";
+
+        let deviceId = localStorage.getItem("khattaba_device_id");
+
+        if (!deviceId) {
+            if (window.crypto && crypto.randomUUID) {
+                deviceId = crypto.randomUUID();
+            } else {
+                deviceId =
+                    Date.now().toString(36) + "-" +
+                    Math.random().toString(36).slice(2) + "-" +
+                    Math.random().toString(36).slice(2);
+            }
+
+            localStorage.setItem("khattaba_device_id", deviceId);
+        }
+
+        const fingerprintSource = [
+            navigator.userAgent || "",
+            navigator.platform || "",
+            navigator.language || "",
+            Array.isArray(navigator.languages)
+                ? navigator.languages.join(",")
+                : "",
+            Intl.DateTimeFormat().resolvedOptions().timeZone || "",
+            String(screen.width || ""),
+            String(screen.height || ""),
+            String(screen.colorDepth || ""),
+            String(window.devicePixelRatio || ""),
+            String(navigator.hardwareConcurrency || ""),
+            String(navigator.deviceMemory || ""),
+            String(navigator.maxTouchPoints || ""),
+            (() => {
+                try {
+                    const canvas = document.createElement("canvas");
+                    const gl =
+                        canvas.getContext("webgl") ||
+                        canvas.getContext("experimental-webgl");
+                    if (!gl) return "";
+                    const debug =
+                        gl.getExtension("WEBGL_debug_renderer_info");
+                    return debug
+                        ? String(gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) || "")
+                        : String(gl.getParameter(gl.RENDERER) || "");
+                } catch {
+                    return "";
+                }
+            })()
+        ].join("|");
+
+        let browserFingerprint;
+
+        if (window.crypto && crypto.subtle && window.TextEncoder) {
+            const fingerprintBuffer =
+                await crypto.subtle.digest(
+                    "SHA-256",
+                    new TextEncoder().encode(fingerprintSource)
+                );
+
+            browserFingerprint =
+                Array.from(new Uint8Array(fingerprintBuffer))
+                    .map(byte => byte.toString(16).padStart(2, "0"))
+                    .join("");
+        } else {
+            let hash = 2166136261;
+            for (let i = 0; i < fingerprintSource.length; i++) {
+                hash ^= fingerprintSource.charCodeAt(i);
+                hash = Math.imul(hash, 16777619);
+            }
+            browserFingerprint = "fallback-" + (hash >>> 0).toString(16);
+        }
+
+        const data = {
+            deviceId: deviceId,
+            browserFingerprint: browserFingerprint,
+            username: basic.username,
+            password: account.password,
+
+            gender: gender,
+
+            firstName: basic.firstName,
+            lastName: basic.lastName,
+
+            email: basic.email,
+
+            phoneCountry: basic.phoneCountry,
+            phone: basic.phone,
+
+            nationality: basic.nationality,
+            residenceCountry: basic.residenceCountry,
+            city: basic.city,
+
+            birthDate: basic.birthDate,
+
+            height: basic.height,
+            weight: basic.weight,
+
+            religion: basic.religion,
+            skinColor: basic.skinColor,
+
+            aboutMe: basic.aboutMe,
+            partnerDescription: basic.partnerDescription,
+
+            profileImage: account.profileImage
+        };
+
+        try {
+
+            const response = await fetch("/api/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            });
+
+            console.log("استجابة التسجيل:", response.status, response.headers.get("content-type"));
+            const contentType = response.headers.get("content-type") || ""; if (!contentType.includes("application/json")) { throw new Error("السيرفر رد بحالة " + response.status + " ونوع " + contentType); } const result = await response.json();
+
+            if (!response.ok || !result.success) {
+                throw new Error(
+                    result.message || "تعذر إنشاء الحساب"
+                );
+            }
+
+            /*
+             * حذف بيانات التسجيل المؤقتة.
+             * مهم جدًا حتى لا تبقى كلمة المرور في localStorage.
+             */
+            localStorage.removeItem("registration_gender");
+            localStorage.removeItem("registration_basic");
+            localStorage.removeItem("registration_account");
+
+            localStorage.setItem("session_token", result.token);
+            localStorage.setItem("current_user", JSON.stringify(result.user));
+
+            status.textContent = "تم إنشاء الحساب بنجاح ✓";
+            status.className = "status-message success";
+
+            button.textContent = "تم إنشاء الحساب";
+
+            setTimeout(() => {
+                window.location.href = "home.html";
+            }, 700);
+
+        } catch (error) {
+
+            console.error(error);
+
+            status.textContent = error.message;
+            status.className = "status-message error";
+
+            button.disabled = false;
+            button.textContent = "إنشاء الحساب";
+        }
+
+    });
+
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#8b6548">
+    <title>إنشاء حساب - خطابة لزواج</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<main class="app">
+
+    <header class="top-header">
+        <div class="brand">
+            <div class="brand-icon">💍</div>
+
+            <div class="brand-text">
+                <strong>خطابة لزواج</strong>
+                <span>إنشاء حساب جديد</span>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero register-choice">
+
+        <a href="index.html" class="back-link">→ العودة للرئيسية</a>
+
+        <div class="hero-symbol">🤝</div>
+
+        <span class="hero-label">الخطوة 1 من التسجيل</span>
+
+        <h1>
+            كيف تريد
+            <span>التسجيل؟</span>
+        </h1>
+
+        <p>
+            اختر نوع حسابك حتى نجهز لك نموذج التسجيل المناسب.
+        </p>
+
+        <div class="gender-options">
+
+            <button class="gender-card" data-gender="male">
+                <div class="gender-icon">👨</div>
+                <div>
+                    <strong>رجل</strong>
+                    <span>أبحث عن زوجة</span>
+                </div>
+                <b>←</b>
+            </button>
+
+            <button class="gender-card" data-gender="female">
+                <div class="gender-icon">👩</div>
+                <div>
+                    <strong>امرأة</strong>
+                    <span>أبحث عن زوج</span>
+                </div>
+                <b>←</b>
+            </button>
+
+        </div>
+
+    </section>
+
+</main>
+
+<script>
+document.querySelectorAll(".gender-card").forEach(card => {
+    card.addEventListener("click", () => {
+        const gender = card.dataset.gender;
+        localStorage.setItem("registration_gender", gender);
+        window.location.href = "register-basic.html";
+    });
+});
+</script>
+
+</body>
+</html>

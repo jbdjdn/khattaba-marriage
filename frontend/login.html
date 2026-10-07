@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول - خطابة لزواج</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .login-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 430px;
+            background: rgba(255, 255, 255, 0.72);
+            border: 1px solid rgba(180, 138, 106, 0.22);
+            border-radius: 32px;
+            padding: 30px 22px 24px;
+            box-shadow: 0 18px 50px rgba(90, 63, 43, 0.12);
+            backdrop-filter: blur(12px);
+        }
+
+        .login-top {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .login-logo {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 24px;
+            background: linear-gradient(145deg, #f5ede4, #e8ddd0);
+            box-shadow: 0 8px 22px rgba(90, 63, 43, 0.12);
+            font-size: 32px;
+        }
+
+        .login-brand {
+            margin: 0;
+            color: var(--primary-dark);
+            font-size: 25px;
+            font-weight: 700;
+        }
+
+        .login-welcome {
+            margin: 20px 0 7px;
+            color: var(--text);
+            font-size: 26px;
+            font-weight: 700;
+        }
+
+        .login-description {
+            margin: 0 auto;
+            max-width: 330px;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.9;
+        }
+
+        .login-form {
+            margin-top: 25px;
+        }
+
+        .login-field {
+            margin-bottom: 17px;
+        }
+
+        .login-field label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text);
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .login-input-wrap {
+            position: relative;
+        }
+
+        .login-input-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gold);
+            font-size: 18px;
+            pointer-events: none;
+        }
+
+        .login-input {
+            width: 100%;
+            height: 54px;
+            box-sizing: border-box;
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            background: rgba(255, 255, 255, 0.82);
+            color: var(--text);
+            padding: 0 47px 0 15px;
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            transition: 0.2s ease;
+        }
+
+        .login-input::placeholder {
+            color: #ad9d90;
+        }
+
+        .login-input:focus {
+            border-color: var(--gold);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(180, 138, 106, 0.10);
+        }
+
+        .login-password-wrap .login-input {
+            padding-left: 75px;
+        }
+
+        .login-password-toggle {
+            position: absolute;
+            left: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 0;
+            background: transparent;
+            color: var(--primary);
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 9px;
+            cursor: pointer;
+        }
+
+        .login-button {
+            width: 100%;
+            height: 56px;
+            margin-top: 8px;
+            border: 0;
+            border-radius: 18px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #fff;
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 10px 24px rgba(109, 77, 53, 0.22);
+            transition: 0.2s ease;
+        }
+
+        .login-button:active {
+            transform: translateY(1px);
+        }
+
+        .login-button:disabled {
+            opacity: 0.65;
+            cursor: wait;
+        }
+
+        .login-message {
+            min-height: 22px;
+            margin: 12px 0 0;
+            text-align: center;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .login-message.error {
+            color: #a33d32;
+        }
+
+        .login-message.success {
+            color: #53734d;
+        }
+
+        .login-register {
+            margin-top: 23px;
+            padding-top: 19px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .login-register a {
+            color: var(--primary-dark);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .login-back {
+            display: block;
+            width: fit-content;
+            margin: 0 auto 18px;
+            color: var(--primary-dark);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .login-footer {
+            margin-top: 20px;
+            text-align: center;
+            color: #a49385;
+            font-size: 11px;
+        }
+
+        @media (max-width: 480px) {
+            .login-page {
+                padding: 15px;
+                align-items: flex-start;
+            }
+
+            .login-card {
+                margin-top: 10px;
+                border-radius: 28px;
+                padding: 25px 18px 21px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app login-page">
+
+    <section class="login-card">
+
+        <a href="index.html" class="login-back">‹ العودة للرئيسية</a>
+
+        <div class="login-top">
+
+            <div class="login-logo">💍</div>
+
+            <h1 class="login-brand">خطابة لزواج</h1>
+
+            <h2 class="login-welcome">مرحبًا بعودتك</h2>
+
+            <p class="login-description">
+                سجّل دخولك للوصول إلى حسابك ومقترحات الزواج.
+            </p>
+
+        </div>
+
+
+        <form id="loginForm" class="login-form">
+
+            <div class="login-field">
+
+                <label for="username">اسم المستخدم</label>
+
+                <div class="login-input-wrap">
+
+                    <span class="login-input-icon">👤</span>
+
+                    <input
+                        id="username"
+                        name="username"
+                        class="login-input"
+                        type="text"
+                        autocomplete="username"
+                        placeholder="أدخل اسم المستخدم"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="login-field">
+
+                <label for="password">كلمة المرور</label>
+
+                <div class="login-input-wrap login-password-wrap">
+
+                    <span class="login-input-icon">🔒</span>
+
+                    <input
+                        id="password"
+                        name="password"
+                        class="login-input"
+                        type="password"
+                        autocomplete="current-password"
+                        placeholder="أدخل كلمة المرور"
+                        required
+                    >
+
+                    <button
+                        type="button"
+                        id="togglePassword"
+                        class="login-password-toggle"
+                    >
+                        إظهار
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <button
+                id="loginButton"
+                class="login-button"
+                type="submit"
+            >
+                تسجيل الدخول
+            </button>
+
+
+            <p id="loginMessage" class="login-message"></p>
+
+        </form>
+
+
+        <div class="login-register">
+
+            ليس لديك حساب؟
+            <a href="register.html">إنشاء حساب جديد</a>
+
+        </div>
+
+
+        <div class="login-footer">
+            زواج جاد • خصوصية • احترام
+        </div>
+
+    </section>
+
+</div>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    const form = document.getElementById("loginForm");
+    const username = document.getElementById("username");
+    const password = document.getElementById("password");
+    const togglePassword = document.getElementById("togglePassword");
+    const button = document.getElementById("loginButton");
+    const message = document.getElementById("loginMessage");
+
+
+    togglePassword.addEventListener("click", () => {
+
+        if (password.type === "password") {
+            password.type = "text";
+            togglePassword.textContent = "إخفاء";
+        } else {
+            password.type = "password";
+            togglePassword.textContent = "إظهار";
+        }
+
+    });
+
+
+    form.addEventListener("submit", async (event) => {
+
+        event.preventDefault();
+
+        button.disabled = true;
+        button.textContent = "جاري تسجيل الدخول...";
+
+        message.textContent = "";
+        message.className = "login-message";
+
+
+        try {
+
+            let deviceId =
+                localStorage.getItem("khattaba_device_id");
+
+            if (!deviceId) {
+                if (window.crypto && crypto.randomUUID) {
+                    deviceId = crypto.randomUUID();
+                } else {
+                    deviceId =
+                        Date.now().toString(36) + "-" +
+                        Math.random().toString(36).slice(2) + "-" +
+                        Math.random().toString(36).slice(2);
+                }
+
+                localStorage.setItem(
+                    "khattaba_device_id",
+                    deviceId
+                );
+            }
+
+            const fingerprintSource = [
+                navigator.userAgent || "",
+                navigator.platform || "",
+                navigator.language || "",
+                Array.isArray(navigator.languages)
+                    ? navigator.languages.join(",")
+                    : "",
+                Intl.DateTimeFormat()
+                    .resolvedOptions()
+                    .timeZone || "",
+                String(screen.width || ""),
+                String(screen.height || ""),
+                String(screen.colorDepth || ""),
+                String(window.devicePixelRatio || ""),
+                String(navigator.hardwareConcurrency || ""),
+                String(navigator.deviceMemory || ""),
+                String(navigator.maxTouchPoints || "")
+            ].join("|");
+
+            let browserFingerprint;
+
+            if (window.crypto && crypto.subtle && window.TextEncoder) {
+                const fingerprintBuffer =
+                    await crypto.subtle.digest(
+                        "SHA-256",
+                        new TextEncoder().encode(fingerprintSource)
+                    );
+
+                browserFingerprint =
+                    Array.from(new Uint8Array(fingerprintBuffer))
+                        .map(byte => byte.toString(16).padStart(2, "0"))
+                        .join("");
+            } else {
+                let hash = 2166136261;
+
+                for (let i = 0; i < fingerprintSource.length; i++) {
+                    hash ^= fingerprintSource.charCodeAt(i);
+                    hash = Math.imul(hash, 16777619);
+                }
+
+                browserFingerprint =
+                    "fallback-" + (hash >>> 0).toString(16);
+            }
+
+            const response = await fetch("/api/login", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    username: username.value.trim(),
+                    password: password.value,
+                    deviceId: deviceId,
+                    browserFingerprint: browserFingerprint
+                })
+
+            });
+
+
+            const result = await response.json();
+
+
+            if (!response.ok || !result.success) {
+                throw new Error(
+                    result.message || "بيانات الدخول غير صحيحة"
+                );
+            }
+
+
+            localStorage.setItem(
+                "session_token",
+                result.token
+            );
+
+
+            localStorage.setItem(
+                "current_user",
+                JSON.stringify(result.user)
+            );
+
+
+            message.textContent = "تم تسجيل الدخول بنجاح";
+            message.className = "login-message success";
+
+
+            setTimeout(() => {
+                window.location.href = "home.html";
+            }, 400);
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            message.textContent = error.message;
+            message.className = "login-message error";
+
+            button.disabled = false;
+            button.textContent = "تسجيل الدخول";
+
+        }
+
+    });
+
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تعريفي - خطابة لزواج</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<div class="app member-app">
+
+    <header class="member-header">
+
+        <button
+            class="icon-button"
+            type="button"
+            onclick="history.back()"
+        >
+            ← رجوع
+        </button>
+
+        <div class="brand">
+            💍 خطابة لزواج
+        </div>
+
+    </header>
+
+    <main class="member-content">
+
+        <div class="profile-view-card">
+
+            <div class="profile-view-image-wrap">
+                <img
+                    id="profileImage"
+                    src=""
+                    alt="الصورة الشخصية"
+                >
+            </div>
+
+            <div class="profile-view-info">
+
+                <h1 id="profileName">—</h1>
+
+                <p id="profileLocation">—</p>
+
+                <div class="profile-meta">
+                    <span id="profileAge">—</span>
+                    <span id="profileReligion">—</span>
+                </div>
+
+            </div>
+
+        </div>
+
+        <section class="bio-section">
+
+            <h2>📝 نبذة عني</h2>
+
+            <p id="aboutMe">
+                جاري تحميل نبذتك...
+            </p>
+
+        </section>
+
+        <section class="bio-section">
+
+            <h2>💍 شريك الحياة</h2>
+
+            <p id="partnerDescription">
+                جاري تحميل ما تبحث عنه...
+            </p>
+
+        </section>
+
+        <section class="detail-section">
+
+            <h2>📋 معلوماتي</h2>
+
+            <div class="detail-list">
+
+                <div>
+                    <strong>الجنسية</strong>
+                    <span id="nationality">—</span>
+                </div>
+
+                <div>
+                    <strong>بلد الإقامة</strong>
+                    <span id="residenceCountry">—</span>
+                </div>
+
+                <div>
+                    <strong>المدينة</strong>
+                    <span id="city">—</span>
+                </div>
+
+                <div>
+                    <strong>العمر</strong>
+                    <span id="age">—</span>
+                </div>
+
+                <div>
+                    <strong>الطول</strong>
+                    <span id="height">—</span>
+                </div>
+
+                <div>
+                    <strong>الوزن</strong>
+                    <span id="weight">—</span>
+                </div>
+
+                <div>
+                    <strong>لون البشرة</strong>
+                    <span id="skinColor">—</span>
+                </div>
+
+            </div>
+
+        </section>
+
+        <button
+            class="member-action primary-action"
+            type="button"
+            onclick="editProfile()"
+        >
+            ✏️ تعديل تعريفي
+        </button>
+
+    </main>
+
+    <nav class="bottom-nav">
+
+        <a href="home.html" class="nav-item">
+            <span>✨</span>
+            <small>اكتشف</small>
+        </a>
+
+        <a href="search.html" class="nav-item">
+            <span>🔎</span>
+            <small>بحث</small>
+        </a>
+
+        <a href="chat.html" class="nav-item">
+            <span>💬</span>
+            <small>دردشة <b id="chatBadge" style="display:none;background:#c0392b;color:white;border-radius:10px;padding:1px 6px;font-size:10px;margin-right:4px;">0</b></small>
+        </a>
+
+        <a href="about-me.html" class="nav-item">
+            <span>📝</span>
+            <small>تعريفي</small>
+        </a>
+
+        <a href="profile.html" class="nav-item">
+            <span>👤</span>
+            <small>ملفي</small>
+        </a>
+
+    </nav>
+
+</div>
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    async () => {
+
+        const token =
+            localStorage.getItem(
+                "session_token"
+            );
+
+        if (!token) {
+            window.location.href =
+                "index.html";
+            return;
+        }
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/me",
+                    {
+                        headers: {
+                            "Authorization":
+                                `Bearer ${token}`
+                        }
+                    }
+                );
+
+            const result =
+                await response.json();
+
+            if (
+                !response.ok ||
+                !result.success
+            ) {
+
+                localStorage.removeItem(
+                    "session_token"
+                );
+
+                localStorage.removeItem(
+                    "current_user"
+                );
+
+                window.location.href =
+                    "index.html";
+
+                return;
+            }
+
+            const user = result.user;
+
+            document.getElementById(
+                "profileImage"
+            ).src =
+                user.profile_image || "";
+
+            document.getElementById(
+                "profileName"
+            ).textContent =
+                `${user.first_name || ""} ${user.last_name || ""}`.trim();
+
+            document.getElementById(
+                "profileLocation"
+            ).textContent =
+                `${user.city || "—"} • ${user.residence_country || "—"}`;
+
+            const age =
+                calculateAge(
+                    user.birth_date
+                );
+
+            document.getElementById(
+                "profileAge"
+            ).textContent =
+                `${age} سنة`;
+
+            document.getElementById(
+                "profileReligion"
+            ).textContent =
+                user.religion || "—";
+
+            document.getElementById(
+                "aboutMe"
+            ).textContent =
+                user.about_me ||
+                "لم تتم إضافة نبذة بعد.";
+
+            document.getElementById(
+                "partnerDescription"
+            ).textContent =
+                user.partner_description ||
+                "لم تتم إضافة نبذة عن شريك الحياة بعد.";
+
+            document.getElementById(
+                "nationality"
+            ).textContent =
+                user.nationality || "—";
+
+            document.getElementById(
+                "residenceCountry"
+            ).textContent =
+                user.residence_country || "—";
+
+            document.getElementById(
+                "city"
+            ).textContent =
+                user.city || "—";
+
+            document.getElementById(
+                "age"
+            ).textContent =
+                `${age} سنة`;
+
+            document.getElementById(
+                "height"
+            ).textContent =
+                `${user.height || "—"} سم`;
+
+            document.getElementById(
+                "weight"
+            ).textContent =
+                `${user.weight || "—"} كجم`;
+
+            document.getElementById(
+                "skinColor"
+            ).textContent =
+                user.skin_color || "—";
+
+        } catch (error) {
+
+            console.error(error);
+
+            document.getElementById(
+                "aboutMe"
+            ).textContent =
+                "تعذر تحميل بياناتك.";
+
+        }
+
+    }
+);
+
+function calculateAge(birthDate) {
+
+    const birth =
+        new Date(birthDate);
+
+    const today =
+        new Date();
+
+    let age =
+        today.getFullYear() -
+        birth.getFullYear();
+
+    const month =
+        today.getMonth() -
+        birth.getMonth();
+
+    if (
+        month < 0 ||
+        (
+            month === 0 &&
+            today.getDate() <
+            birth.getDate()
+        )
+    ) {
+        age--;
+    }
+
+    return age;
+}
+
+function editProfile() {
+
+    window.location.href =
+        "edit-profile.html";
+}
+
+</script>
+
+<script src="js/notifications.js"></script>
+<script src="js/push.js"></script>
+</body>
+</html>

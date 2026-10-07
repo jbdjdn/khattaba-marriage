@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#8b6548">
+    <title>بياناتي - خطابة لزواج</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<main class="app">
+
+    <header class="top-header">
+        <div class="brand">
+            <div class="brand-icon">💍</div>
+            <div class="brand-text">
+                <strong>خطابة لزواج</strong>
+                <span>إنشاء حساب جديد</span>
+            </div>
+        </div>
+    </header>
+
+    <section class="form-screen">
+
+        <a href="register.html" class="back-link">→ رجوع</a>
+
+        <div class="step-info">
+            <span>الخطوة 2 من التسجيل</span>
+            <strong>بياناتك الشخصية</strong>
+        </div>
+
+        <h1>
+            عرّفنا
+            <span>بنفسك</span>
+        </h1>
+
+        <p class="form-intro">
+            أكمل بياناتك حتى نعرض ملفك للأشخاص المناسبين.
+        </p>
+
+        <form id="basicForm">
+
+            <div class="section-title">المعلومات الأساسية</div>
+
+            <div class="form-row">
+
+                <div class="field">
+                    <label for="firstName">الاسم الأول</label>
+                    <input type="text" id="firstName" placeholder="محمد" required>
+                </div>
+
+                <div class="field">
+                    <label for="lastName">اسم العائلة</label>
+                    <input type="text" id="lastName" placeholder="العلي" required>
+                </div>
+
+            </div>
+
+            <div class="field">
+                <label for="username">اسم المستخدم</label>
+                <input type="text" id="username" placeholder="اختر اسم مستخدم" autocomplete="username" required>
+                <small>يستخدم لتسجيل الدخول ولا يمكن تغييره لاحقًا.</small>
+            </div>
+
+            <div class="field">
+                <label for="email">البريد الإلكتروني</label>
+                <input type="email" id="email" placeholder="example@email.com" autocomplete="email" required>
+            </div>
+
+            <div class="field">
+                <label>رقم الهاتف</label>
+
+                <div class="phone-group">
+                    <select id="phoneCountry" required>
+                        <option value="">الدولة</option>
+                        <option value="+967">🇾🇪 اليمن +967</option>
+                        <option value="+966">🇸🇦 السعودية +966</option>
+                        <option value="+971">🇦🇪 الإمارات +971</option>
+                        <option value="+965">🇰🇼 الكويت +965</option>
+                        <option value="+968">🇴🇲 عُمان +968</option>
+                        <option value="+974">🇶🇦 قطر +974</option>
+                        <option value="+973">🇧🇭 البحرين +973</option>
+                    </select>
+
+                    <input type="tel" id="phone" placeholder="رقم الهاتف" inputmode="numeric" required>
+                </div>
+
+                <small>لن نطلب رمز تحقق.</small>
+            </div>
+
+            <div class="form-row">
+
+                <div class="field">
+                    <label for="nationality">الجنسية</label>
+
+                    <select id="nationality" required>
+                        <option value="">اختر</option>
+                        <option value="اليمن">اليمن</option>
+                        <option value="السعودية">السعودية</option>
+                        <option value="الإمارات">الإمارات</option>
+                        <option value="الكويت">الكويت</option>
+                        <option value="عُمان">عُمان</option>
+                        <option value="قطر">قطر</option>
+                        <option value="البحرين">البحرين</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="residenceCountry">دولة الإقامة</label>
+
+                    <select id="residenceCountry" required>
+                        <option value="">اختر</option>
+                        <option value="اليمن">اليمن</option>
+                        <option value="السعودية">السعودية</option>
+                        <option value="الإمارات">الإمارات</option>
+                        <option value="الكويت">الكويت</option>
+                        <option value="عُمان">عُمان</option>
+                        <option value="قطر">قطر</option>
+                        <option value="البحرين">البحرين</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="field">
+                <label for="city">المدينة</label>
+                <input type="text" id="city" placeholder="مثال: صنعاء" required>
+            </div>
+
+
+            <div class="section-title">المعلومات الشخصية</div>
+
+            <div class="field">
+                <label for="birthDate">تاريخ الميلاد</label>
+                <input type="date" id="birthDate" required>
+                <small id="agePreview">سيتم حساب العمر تلقائيًا.</small>
+            </div>
+
+            <div class="form-row">
+
+                <div class="field">
+                    <label for="height">الطول</label>
+
+                    <div class="input-unit">
+                        <input type="number" id="height" min="100" max="230" placeholder="170" required>
+                        <span>سم</span>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="weight">الوزن</label>
+
+                    <div class="input-unit">
+                        <input type="number" id="weight" min="30" max="250" placeholder="70" required>
+                        <span>كجم</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="form-row">
+
+                <div class="field">
+                    <label for="religion">المذهب</label>
+
+                    <select id="religion" required>
+                        <option value="">اختر</option>
+                        <option value="سني">سني</option>
+                        <option value="شيعي">شيعي</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="skinColor">لون البشرة</label>
+
+                    <select id="skinColor" required>
+                        <option value="">اختر</option>
+                        <option value="أبيض">أبيض</option>
+                        <option value="حنطي">حنطي</option>
+                        <option value="أسمر">أسمر</option>
+                        <option value="داكن">داكن</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="field">
+                <label for="aboutMe">عن نفسك</label>
+                <textarea
+                    id="aboutMe"
+                    rows="5"
+                    maxlength="1000"
+                    placeholder="اكتب نبذة مختصرة عن نفسك..."
+                    required
+                ></textarea>
+            </div>
+
+            <div class="field">
+                <label for="partnerDescription">مواصفات شريك الحياة</label>
+                <textarea
+                    id="partnerDescription"
+                    rows="5"
+                    maxlength="1000"
+                    placeholder="ما الصفات التي تبحث عنها في شريك حياتك؟"
+                    required
+                ></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary form-submit">
+                متابعة
+            </button>
+
+        </form>
+
+    </section>
+
+</main>
+
+<script>
+
+function calculateAge(dateString) {
+    const birthDate = new Date(dateString);
+    const today = new Date();
+
+    let age = today.getFullYear() - birthDate.getFullYear();
+
+    const monthDifference = today.getMonth() - birthDate.getMonth();
+
+    if (
+        monthDifference < 0 ||
+        (monthDifference === 0 && today.getDate() < birthDate.getDate())
+    ) {
+        age--;
+    }
+
+    return age;
+}
+
+const birthDateInput = document.getElementById("birthDate");
+const agePreview = document.getElementById("agePreview");
+
+birthDateInput.addEventListener("change", () => {
+
+    if (!birthDateInput.value) {
+        agePreview.textContent = "سيتم حساب العمر تلقائيًا.";
+        return;
+    }
+
+    const age = calculateAge(birthDateInput.value);
+
+    if (age < 18) {
+        agePreview.textContent = "يجب أن يكون العمر 18 سنة أو أكثر.";
+        return;
+    }
+
+    agePreview.textContent = `العمر: ${age} سنة`;
+});
+
+
+document.getElementById("basicForm").addEventListener("submit", (event) => {
+
+    event.preventDefault();
+
+    const age = calculateAge(birthDateInput.value);
+
+    if (age < 18) {
+        alert("التسجيل متاح لمن أعمارهم 18 سنة أو أكثر.");
+        return;
+    }
+
+    const data = {
+
+        firstName: document.getElementById("firstName").value.trim(),
+        lastName: document.getElementById("lastName").value.trim(),
+        username: document.getElementById("username").value.trim(),
+        email: document.getElementById("email").value.trim(),
+
+        phoneCountry: document.getElementById("phoneCountry").value,
+        phone: document.getElementById("phone").value.trim(),
+
+        nationality: document.getElementById("nationality").value,
+        residenceCountry: document.getElementById("residenceCountry").value,
+        city: document.getElementById("city").value.trim(),
+
+        birthDate: birthDateInput.value,
+        age: age,
+
+        height: document.getElementById("height").value,
+        weight: document.getElementById("weight").value,
+
+        religion: document.getElementById("religion").value,
+        skinColor: document.getElementById("skinColor").value,
+
+        aboutMe: document.getElementById("aboutMe").value.trim(),
+        partnerDescription: document.getElementById("partnerDescription").value.trim()
+    };
+
+    localStorage.setItem(
+        "registration_basic",
+        JSON.stringify(data)
+    );
+
+    window.location.href = "register-photo.html";
+});
+
+</script>
+
+</body>
+</html>

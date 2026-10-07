@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>البحث - خطابة لزواج</title>
+
+    <link rel="stylesheet" href="css/style.css?v=20261007">
+
+    <style>
+
+        .search-page {
+            padding: 18px 15px 105px;
+        }
+
+        .search-hero {
+            background:
+                radial-gradient(circle at top right, rgba(180,138,106,.20), transparent 42%),
+                linear-gradient(145deg, #fffaf5, #f4e9dd);
+            border: 1px solid var(--border);
+            border-radius: 26px;
+            padding: 24px 18px;
+            margin-bottom: 16px;
+            box-shadow: 0 10px 30px rgba(90,63,43,.08);
+            animation: searchIn .5s ease;
+        }
+
+        .search-hero-icon {
+            width: 58px;
+            height: 58px;
+            border-radius: 20px;
+            background: linear-gradient(145deg, #b48a6a, #8b6548);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 27px;
+            margin-bottom: 14px;
+            box-shadow: 0 8px 18px rgba(139,101,72,.25);
+        }
+
+        .search-hero h2 {
+            color: var(--text);
+            font-size: 22px;
+            margin-bottom: 6px;
+        }
+
+        .search-hero p {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .filter-card {
+            background: rgba(255,255,255,.88);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 18px;
+            margin-bottom: 14px;
+            box-shadow: 0 7px 22px rgba(90,63,43,.06);
+            animation: searchIn .55s ease;
+        }
+
+        .filter-title {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            color: var(--text);
+            font-size: 17px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .filter-title span {
+            width: 34px;
+            height: 34px;
+            border-radius: 12px;
+            background: var(--surface-2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .choice-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 9px;
+        }
+
+        .choice {
+            position: relative;
+        }
+
+        .choice input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .choice label {
+            min-height: 48px;
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            background: #fff;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            padding: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: .2s ease;
+        }
+
+        .choice label:active {
+            transform: scale(.94);
+        }
+
+        .choice input:checked + label {
+            background: linear-gradient(145deg, #8b6548, #a87d5b);
+            color: white;
+            border-color: #8b6548;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 15px rgba(139,101,72,.20);
+        }
+
+        .select-box {
+            position: relative;
+        }
+
+        .select-box select,
+        .text-input {
+            width: 100%;
+            border: 1px solid var(--border);
+            background: #fff;
+            color: var(--text);
+            border-radius: 15px;
+            padding: 14px 13px;
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            transition: .2s;
+        }
+
+        .select-box select:focus,
+        .text-input:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(180,138,106,.12);
+        }
+
+        .two-fields {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .field-label {
+            display: block;
+            color: var(--muted);
+            font-size: 12px;
+            margin: 0 0 7px 4px;
+        }
+
+        .age-note {
+            margin-top: 10px;
+            padding: 10px 12px;
+            border-radius: 13px;
+            background: #faf5ef;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .search-main-btn {
+            width: 100%;
+            border: 0;
+            border-radius: 18px;
+            padding: 16px;
+            color: white;
+            font-family: inherit;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            background: linear-gradient(135deg, #8b6548, #b48a6a);
+            box-shadow: 0 10px 24px rgba(139,101,72,.25);
+            transition: .2s ease;
+            margin-top: 3px;
+        }
+
+        .search-main-btn:active {
+            transform: scale(.97);
+        }
+
+        .clear-btn {
+            width: 100%;
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 12px;
+            background: transparent;
+            color: var(--muted);
+            font-family: inherit;
+            margin-top: 9px;
+            cursor: pointer;
+        }
+
+        .results-title {
+            color: var(--text);
+            font-size: 18px;
+            font-weight: bold;
+            margin: 22px 4px 10px;
+        }
+
+        .empty-search {
+            text-align: center;
+            padding: 25px 15px;
+            color: var(--muted);
+        }
+
+        .empty-search div {
+            font-size: 42px;
+            margin-bottom: 10px;
+        }
+
+        @keyframes searchIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 350px) {
+            .choice-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <header class="member-header">
+        <button class="back-btn" onclick="history.back()">‹</button>
+
+        <div>
+            <h1>البحث</h1>
+            <p>ابحث بطريقة تناسبك</p>
+        </div>
+    </header>
+
+
+    <main class="search-page">
+
+        <section class="search-hero">
+
+            <div class="search-hero-icon">🔎</div>
+
+            <h2>ابحث عن شريك الحياة</h2>
+
+            <p>
+                اختر ما يناسبك من المعايير،
+                وسنرتب لك النتائج بطريقة ذكية.
+            </p>
+
+        </section>
+
+
+        <!-- الدول -->
+
+        <section class="filter-card">
+
+            <div class="filter-title">
+                <span>🌍</span>
+                بلد الإقامة
+            </div>
+
+            <div class="choice-grid">
+
+                <div class="choice">
+                    <input type="radio" name="residenceCountry" id="yemen" value="اليمن">
+                    <label for="yemen">🇾🇪 اليمن</label>
+                </div>
+
+                <div class="choice">
+                    <input type="radio" name="residenceCountry" id="saudi" value="السعودية">
+                    <label for="saudi">🇸🇦 السعودية</label>
+                </div>
+
+                <div class="choice">
+                    <input type="radio" name="residenceCountry" id="uae" value="الإمارات">
+                    <label for="uae">🇦🇪 الإمارات</label>
+                </div>
+
+                <div class="choice">
+                    <input type="radio" name="residenceCountry" id="kuwait" value="الكويت">
+                    <label for="kuwait">🇰🇼 الكويت</label>
+                </div>
+
+                <div class="choice">
+                    <input type="radio" name="residenceCountry" id="qatar" value="قطر">
+                    <label for="qatar">🇶🇦 قطر</label>
+                </div>
+
+                <div class="choice">
+                    <input type="radio" name="residenceCountry" id="oman" value="عُمان">
+                    <label for="oman">🇴🇲 عُمان</label>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- الجنسية -->
+
+        <section class="filter-card">
+
+            <div class="filter-title">
+                <span>🪪</span>
+                الجنسية
+            </div>
+
+            <div class="choice-grid">
+
+                <div class="choice">
+                    <input type="radio" name="nationality" id="natYemen" value="اليمن">
+                    <label for="natYemen">🇾🇪 يمني</label>
+                </div>
+
+                <div class="choice">
+                    <input type="radio" name="nationality" id="natSaudi" value="السعودية">
+                    <label for="natSaudi">🇸🇦 سعودي</label>
+                </div>
+
+                <div class="choice">
+                    <input type="radio" name="nationality" id="natUae" value="الإمارات">
+                    <label for="natUae">🇦🇪 إماراتي</label>
+                </div>
+
+                <div class="choice">
+                    <input type="radio" name="nationality" id="natKuwait" value="الكويت">
+                    <label for="natKuwait">🇰🇼 كويتي</label>
+                </div>
+
+                <div class="choice">
+                    <input type="radio" name="nationality" id="natQatar" value="قطر">
+                    <label for="natQatar">🇶🇦 قطري</label>
+                </div>
+
+                <div class="choice">
+                    <input type="radio" name="nationality" id="natOman" value="عُمان">
+                    <label for="natOman">🇴🇲 عُماني</label>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- العمر -->
+
+        <section class="filter-card">
+
+            <div class="filter-title">
+                <span>🎂</span>
+                العمر
+            </div>
+
+            <div class="two-fields">
+
+                <div>
+                    <label class="field-label">من</label>
+                    <input
+                        id="minAge"
+                        class="text-input"
+                        type="number"
+                        min="18"
+                        placeholder="مثلاً 25">
+                </div>
+
+                <div>
+                    <label class="field-label">إلى</label>
+                    <input
+                        id="maxAge"
+                        class="text-input"
+                        type="number"
+                        min="18"
+                        placeholder="مثلاً 35">
+                </div>
+
+            </div>
+
+            <div class="age-note">
+                💡 العمر هنا تفضيل للترتيب فقط، وليس شرطًا يمنع ظهور باقي الأعمار.
+            </div>
+
+        </section>
+
+
+        <!-- لون البشرة -->
+
+        <section class="filter-card">
+
+            <div class="filter-title">
+                <span>✨</span>
+                لون البشرة
+            </div>
+
+            <div class="choice-grid">
+
+                <div class="choice">
+                    <input type="radio" name="skinColor" id="skinWhite" value="أبيض">
+                    <label for="skinWhite">🤍 أبيض</label>
+                </div>
+
+                <div class="choice">
+                    <input type="radio" name="skinColor" id="skinWheat" value="حنطي">
+                    <label for="skinWheat">🤎 حنطي</label>
+                </div>
+
+                <div class="choice">
+                    <input type="radio" name="skinColor" id="skinBrown" value="أسمر">
+                    <label for="skinBrown">🟤 أسمر</label>
+                </div>
+
+                <div class="choice">
+                    <input type="radio" name="skinColor" id="skinDark" value="أسود">
+                    <label for="skinDark">⚫ أسود</label>
+                </div>
+
+                <div class="choice">
+                    <input type="radio" name="skinColor" id="skinLight" value="فاتح">
+                    <label for="skinLight">🌸 فاتح</label>
+                </div>
+
+                <div class="choice">
+                    <input type="radio" name="skinColor" id="skinQamhi" value="قمحي">
+                    <label for="skinQamhi">🌾 قمحي</label>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- الدين -->
+
+        <section class="filter-card">
+
+            <div class="filter-title">
+                <span>🕌</span>
+                الدين
+            </div>
+
+            <div class="choice-grid">
+
+                <div class="choice">
+                    <input type="radio" name="religion" id="sunni" value="سني">
+                    <label for="sunni">☪️ سني</label>
+                </div>
+
+                <div class="choice">
+                    <input type="radio" name="religion" id="shia" value="شيعي">
+                    <label for="shia">☪️ شيعي</label>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- الطول -->
+
+        <section class="filter-card">
+
+            <div class="filter-title">
+                <span>📏</span>
+                الطول
+            </div>
+
+            <div class="two-fields">
+
+                <div>
+                    <label class="field-label">من سم</label>
+                    <input
+                        id="minHeight"
+                        class="text-input"
+                        type="number"
+                        min="100"
+                        placeholder="150">
+                </div>
+
+                <div>
+                    <label class="field-label">إلى سم</label>
+                    <input
+                        id="maxHeight"
+                        class="text-input"
+                        type="number"
+                        min="100"
+                        placeholder="190">
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- المدينة -->
+
+        <section class="filter-card">
+
+            <div class="filter-title">
+                <span>📍</span>
+                المدينة
+            </div>
+
+            <input
+                id="city"
+                class="text-input"
+                type="text"
+                placeholder="اكتب اسم المدينة">
+
+        </section>
+
+
+        <button id="searchButton" class="search-main-btn">
+            🔎 ابحث الآن
+        </button>
+
+        <button id="clearButton" class="clear-btn">
+            ↺ مسح الاختيارات
+        </button>
+
+
+        <h2 class="results-title">النتائج</h2>
+
+        <section id="searchResults">
+
+            <div class="empty-search">
+                <div>💍</div>
+
+                <h3>ابدأ البحث</h3>
+
+                <p>
+                    اختر المعايير التي تناسبك ثم اضغط «ابحث الآن».
+                </p>
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <nav class="bottom-nav">
+
+        <a href="home.html" class="nav-item">
+            <span>💫</span>
+            <small>اكتشفني</small>
+        </a>
+
+        <a href="search.html" class="nav-item active">
+            <span>🔎</span>
+            <small>بحث</small>
+        </a>
+
+        <a href="chat.html" class="nav-item">
+            <span>💬</span>
+            <small>دردشة <b id="chatBadge" style="display:none;background:#c0392b;color:white;border-radius:10px;padding:1px 6px;font-size:10px;margin-right:4px;">0</b></small>
+        </a>
+
+        <a href="about-me.html" class="nav-item">
+            <span>📝</span>
+            <small>تعريفي</small>
+        </a>
+
+        <a href="profile.html" class="nav-item">
+            <span>👤</span>
+            <small>ملفي</small>
+        </a>
+
+    </nav>
+
+</div>
+
+<script src="js/notifications.js"></script>
+<script src="js/push.js"></script>
+</body>
+<script>
+
+
+const token = localStorage.getItem("session_token");
+
+if (!token) {
+    window.location.href = "index.html";
+}
+
+const searchButton =
+    document.getElementById("searchButton");
+
+const clearButton =
+    document.getElementById("clearButton");
+
+const resultsArea =
+    document.getElementById("searchResults");
+
+
+function getRadioValue(name) {
+
+    const selected =
+        document.querySelector(
+            `input[name="${name}"]:checked`
+        );
+
+    return selected ? selected.value : "";
+}
+
+
+function buildQuery() {
+
+    const params =
+        new URLSearchParams();
+
+    const residenceCountry =
+        getRadioValue("residenceCountry");
+
+    const nationality =
+        getRadioValue("nationality");
+
+    const skinColor =
+        getRadioValue("skinColor");
+
+    const religion =
+        getRadioValue("religion");
+
+    const city =
+        document.getElementById("city").value.trim();
+
+    const minAge =
+        document.getElementById("minAge").value;
+
+    const maxAge =
+        document.getElementById("maxAge").value;
+
+    const minHeight =
+        document.getElementById("minHeight").value;
+
+    const maxHeight =
+        document.getElementById("maxHeight").value;
+
+
+    if (residenceCountry)
+        params.set(
+            "residenceCountry",
+            residenceCountry
+        );
+
+    if (nationality)
+        params.set(
+            "nationality",
+            nationality
+        );
+
+    if (skinColor)
+        params.set(
+            "skinColor",
+            skinColor
+        );
+
+    if (religion)
+        params.set(
+            "religion",
+            religion
+        );
+
+    if (city)
+        params.set(
+            "city",
+            city
+        );
+
+    if (minAge)
+        params.set(
+            "minAge",
+            minAge
+        );
+
+    if (maxAge)
+        params.set(
+            "maxAge",
+            maxAge
+        );
+
+    if (minHeight)
+        params.set(
+            "minHeight",
+            minHeight
+        );
+
+    if (maxHeight)
+        params.set(
+            "maxHeight",
+            maxHeight
+        );
+
+
+    return params;
+}
+
+
+searchButton.addEventListener(
+    "click",
+    async () => {
+
+        searchButton.disabled = true;
+
+        searchButton.textContent =
+            "⏳ جاري البحث...";
+
+        resultsArea.innerHTML = `
+            <div class="empty-search">
+                <div>🔎</div>
+                <h3>نبحث لك...</h3>
+                <p>لحظات ونجهز النتائج المناسبة.</p>
+            </div>
+        `;
+
+
+        try {
+
+            const params =
+                buildQuery();
+
+            const response =
+                await fetch(
+                    "/api/search?" +
+                    params.toString(),
+                    {
+                        headers: {
+                            Authorization:
+                                "Bearer " + token
+                        }
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (
+                response.status === 401
+            ) {
+
+                localStorage.removeItem(
+                    "session_token"
+                );
+
+                window.location.href =
+                    "index.html";
+
+                return;
+            }
+
+
+            if (!data.success) {
+
+                throw new Error(
+                    data.message ||
+                    "تعذر تنفيذ البحث"
+                );
+            }
+
+
+            renderResults(
+                data.results || []
+            );
+
+        } catch (error) {
+
+            resultsArea.innerHTML = `
+                <div class="empty-search">
+                    <div>⚠️</div>
+                    <h3>حدث خطأ</h3>
+                    <p>${error.message}</p>
+                </div>
+            `;
+
+        } finally {
+
+            searchButton.disabled = false;
+
+            searchButton.textContent =
+                "🔎 ابحث الآن";
+        }
+
+    }
+);
+
+
+function renderResults(users) {
+
+    if (!users.length) {
+
+        resultsArea.innerHTML = `
+            <div class="empty-search">
+                <div>💍</div>
+                <h3>لا توجد نتائج حاليًا</h3>
+                <p>
+                    جرّب تغيير بعض معايير البحث.
+                </p>
+            </div>
+        `;
+
+        return;
+    }
+
+
+    resultsArea.innerHTML = users
+        .map(user => {
+
+            const fullName =
+                `${user.first_name} ${user.last_name}`;
+
+            const image =
+                user.profile_image || "";
+
+            return `
+                <article
+                    class="search-result-card"
+                    style="
+                        background:#fff;
+                        border:1px solid var(--border);
+                        border-radius:22px;
+                        padding:14px;
+                        margin-bottom:12px;
+                        box-shadow:0 7px 20px rgba(90,63,43,.07);
+                    "
+                >
+
+                    <div
+                        style="
+                            display:flex;
+                            gap:13px;
+                            align-items:center;
+                        "
+                    >
+
+                        <img
+                            src="${image}"
+                            alt="${fullName}"
+                            style="
+                                width:78px;
+                                height:78px;
+                                border-radius:20px;
+                                object-fit:cover;
+                                background:#f0e8df;
+                            "
+                        >
+
+                        <div style="flex:1">
+
+                            <h3
+                                style="
+                                    color:var(--text);
+                                    margin-bottom:5px;
+                                "
+                            >
+                                ${fullName}
+                            </h3>
+
+                            <p
+                                style="
+                                    color:var(--muted);
+                                    font-size:13px;
+                                    line-height:1.8;
+                                "
+                            >
+                                🎂 ${user.age} سنة
+                                <br>
+                                📍 ${user.city}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        style="
+                            display:flex;
+                            flex-wrap:wrap;
+                            gap:6px;
+                            margin:12px 0;
+                        "
+                    >
+
+                        <span class="profile-tag">
+                            🌍 ${user.nationality}
+                        </span>
+
+                        <span class="profile-tag">
+                            🏠 ${user.residence_country}
+                        </span>
+
+                        <span class="profile-tag">
+                            📏 ${user.height} سم
+                        </span>
+
+                        <span class="profile-tag">
+                            🕌 ${user.religion}
+                        </span>
+
+                    </div>
+
+
+                    <a
+                        href="profile-view.html?id=${user.id}"
+                        class="btn-primary"
+                        style="
+                            display:block;
+                            text-align:center;
+                            text-decoration:none;
+                            padding:11px;
+                            border-radius:14px;
+                        "
+                    >
+                        👤 عرض الملف
+                    </a>
+
+                </article>
+            `;
+
+        })
+        .join("");
+}
+
+
+clearButton.addEventListener(
+    "click",
+    () => {
+
+        document
+            .querySelectorAll(
+                'input[type="radio"]'
+            )
+            .forEach(
+                input => input.checked = false
+            );
+
+
+        document
+            .querySelectorAll(
+                'input[type="number"], input[type="text"]'
+            )
+            .forEach(
+                input => input.value = ""
+            );
+
+
+        resultsArea.innerHTML = `
+            <div class="empty-search">
+                <div>💍</div>
+                <h3>ابدأ البحث</h3>
+                <p>
+                    اختر المعايير التي تناسبك ثم اضغط «ابحث الآن».
+                </p>
+            </div>
+        `;
+
+    }
+);
+
+</script>
+

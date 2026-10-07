@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اكتشف - خطابة لزواج</title>
+    <link rel="stylesheet" href="css/style.css">
+<style>
+.discover-heading{padding:6px 0 8px!important;margin:0!important}
+.discover-heading .section-kicker{font-size:12px!important;line-height:1.2!important}
+.discover-heading h1{font-size:19px!important;line-height:1.25!important;margin:2px 0!important}
+.discover-heading p{display:none!important}
+#suggestionArea{margin-top:0!important}
+#suggestionArea img{max-height:52vh!important;width:100%!important;object-fit:cover!important;border-radius:20px!important}
+.quick-actions{display:grid!important;grid-template-columns:repeat(2,1fr)!important;gap:7px!important;margin-top:8px!important}
+.quick-actions .member-action{min-height:42px!important;padding:7px 8px!important;font-size:13px!important;border-radius:13px!important}
+.view-profile-button{display:block!important;margin:7px 0!important;padding:8px!important;font-size:12px!important}
+.empty-suggestions{padding:20px 12px!important}
+@media(max-height:700px){
+.discover-heading{padding-top:3px!important;padding-bottom:5px!important}
+#suggestionArea img{max-height:45vh!important}
+.quick-actions .member-action{min-height:38px!important}
+}
+</style></head>
+
+<body>
+
+<div class="app member-app">
+
+    <header class="member-header">
+        <div>
+            <div class="brand">💍 خطابة لزواج</div>
+            <p id="welcomeText">مرحبًا بك</p>
+        </div>
+
+        <button id="logoutButton" class="icon-button" type="button">
+            خروج
+        </button>
+    </header>
+
+    <main class="member-content">
+
+        <section class="discover-heading">
+            <span class="section-kicker">اكتشف</span>
+            <h1>مقترحات مناسبة لك</h1>
+            <p>
+                تعرّف على أشخاص يبحثون عن زواج جاد ومحترم.
+            </p>
+        </section>
+
+        <!-- المقترح الحالي -->
+        <section id="suggestionArea">
+
+            <div class="empty-suggestions" id="loadingBox">
+
+                <div class="empty-icon">⏳</div>
+
+                <h2>جاري تحميل المقترحات</h2>
+
+                <p>
+                    لحظات ونبحث لك عن الحسابات المناسبة.
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <nav class="bottom-nav">
+
+        <a href="home.html" class="nav-item active">
+            <span>✨</span>
+            <small>اكتشف</small>
+        </a>
+
+        <a href="search.html" class="nav-item">
+            <span>🔎</span>
+            <small>بحث</small>
+        </a>
+
+        <a href="chat.html" class="nav-item">
+            <span>💬</span>
+            <small>دردشة <b id="chatBadge" style="display:none;background:#c0392b;color:white;border-radius:10px;padding:1px 6px;font-size:10px;margin-right:4px;">0</b></small>
+        </a>
+
+        <a href="about-me.html" class="nav-item">
+            <span>📝</span>
+            <small>تعريفي</small>
+        </a>
+
+        <a href="profile.html" class="nav-item">
+            <span>👤</span>
+            <small>ملفي</small>
+        </a>
+
+    </nav>
+
+</div>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", async () => {
+
+    const token = localStorage.getItem("session_token");
+    let suggestions = [];
+    let currentIndex = 0;
+
+    if (!token) {
+        window.location.href = "index.html";
+        return;
+    }
+
+    try {
+
+        /* =========================
+           المستخدم الحالي
+        ========================= */
+
+        const meResponse = await fetch("/api/me", {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        const meResult = await meResponse.json();
+
+        if (!meResponse.ok || !meResult.success) {
+
+            localStorage.removeItem("session_token");
+            localStorage.removeItem("current_user");
+
+            window.location.href = "index.html";
+            return;
+        }
+
+        const user = meResult.user;
+
+        document.getElementById("welcomeText").textContent =
+            `مرحبًا ${user.first_name}`;
+
+
+
+
+
+
+
+        localStorage.setItem(
+            "current_user",
+            JSON.stringify(user)
+        );
+
+
+        /* =========================
+           المقترحات الحقيقية
+        ========================= */
+
+        const discoverResponse = await fetch("/api/discover", {
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        const discoverResult =
+            await discoverResponse.json();
+
+        if (
+            !discoverResponse.ok ||
+            !discoverResult.success
+        ) {
+
+            showMessage(
+                "تعذر تحميل المقترحات",
+                "حدث خطأ أثناء جلب الحسابات."
+            );
+
+            return;
+        }
+
+        console.log("DISCOVER DATA:", discoverResult); suggestions = discoverResult.suggestions || [];
+        currentIndex = 0;
+        renderSuggestions();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        showMessage(
+            "تعذر الاتصال بالسيرفر",
+            "تأكد أن السيرفر يعمل ثم أعد تحميل الصفحة."
+        );
+    }
+
+
+    /* =========================
+       تسجيل الخروج
+    ========================= */
+
+    document.getElementById("logoutButton")
+        .addEventListener("click", async () => {
+
+            try {
+
+                await fetch("/api/logout", {
+                    method: "POST",
+                    headers: {
+                        "Authorization":
+                            `Bearer ${token}`
+                    }
+                });
+
+            } catch (error) {
+                console.error(error);
+            }
+
+            localStorage.removeItem("session_token");
+            localStorage.removeItem("current_user");
+
+            window.location.href = "index.html";
+        });
+
+
+    /* =========================
+       نظام اكتشاف الأشخاص
+    ========================= */
+
+    function renderSuggestions() {
+
+        const area =
+            document.getElementById("suggestionArea");
+
+        area.innerHTML = "";
+
+        if (
+            !suggestions ||
+            currentIndex >= suggestions.length
+        ) {
+
+            area.innerHTML = `
+                <div class="empty-suggestions">
+
+                    <div class="empty-icon">🤍</div>
+
+                    <h2>لا توجد مقترحات حاليًا</h2>
+
+                    <p>
+                        انتهت المقترحات المتاحة حاليًا
+                        وسيتم تحديث المقترحات لاحقًا.
+                    </p>
+
+                </div>
+            `;
+
+            return;
+        }
+
+        const person = suggestions[currentIndex];
+
+        const profileUrl =
+            `profile-view.html?id=${encodeURIComponent(person.id)}`;
+
+        const card =
+            document.createElement("section");
+
+        card.className = "suggestion-card";
+
+        card.innerHTML = `
+
+            <a
+                href="${profileUrl}"
+                class="suggestion-photo-link"
+            >
+
+                <div class="suggestion-photo">
+
+                    <img
+                        src="${person.profile_image || ""}"
+                        alt="صورة ${escapeHtml(person.first_name || "")}"
+                    >
+
+                </div>
+
+            </a>
+
+            <div class="suggestion-info">
+
+                <a
+                    href="${profileUrl}"
+                    class="suggestion-name-link"
+                >
+
+                    <h2>
+                        ${escapeHtml(person.first_name || "")}
+                        ${escapeHtml(person.last_name || "")}
+                    </h2>
+
+                </a>
+
+                <p class="suggestion-location">
+
+                    📍 ${escapeHtml(person.city || "")}
+                    •
+                    ${escapeHtml(person.residence_country || "")}
+
+                </p>
+
+                <div class="profile-meta">
+
+                    <span>
+                        🎂 ${person.age} سنة
+                    </span>
+
+                    <span>
+                        📏 ${person.height || "—"} سم
+                    </span>
+
+                    <span>
+                        🕌 ${escapeHtml(person.religion || "—")}
+                    </span>
+
+                </div>
+
+                <p class="suggestion-bio">
+
+                    ${escapeHtml(
+                        person.about_me ||
+                        "لم تتم إضافة نبذة بعد."
+                    )}
+
+                </p>
+
+                <a
+                    href="${profileUrl}"
+                    class="view-profile-button"
+                >
+                    👤 عرض الملف الكامل
+                </a>
+
+                <div class="quick-actions">
+
+                    <button
+                        class="member-action primary-action"
+                        type="button"
+                        onclick="contactPerson(${person.id})"
+                    >
+                        💌 تواصل
+                    </button>
+
+                    <button
+                        class="member-action"
+                        type="button"
+                        onclick="skipPerson(${person.id})"
+                    >
+                        ❌ تخطي
+                    </button>
+
+                    <button
+                        class="member-action"
+                        type="button"
+                        onclick="undoPerson()"
+                    >
+                        ↩️ تراجع
+                    </button>
+
+                    <button
+                        class="member-action boost-action"
+                        type="button"
+                        onclick="boostPerson(${person.id})"
+                    >
+                        🚀 تعزيز
+                    </button>
+
+                </div>
+
+            </div>
+        `;
+
+        area.appendChild(card);
+    }
+
+
+    /* =========================
+       تواصل
+    ========================= */
+
+    window.contactPerson = function(id) {
+
+        window.location.href =
+            `chat.html?user=${encodeURIComponent(id)}`;
+    };
+
+
+    /* =========================
+       تخطي
+    ========================= */
+
+    window.skipPerson = async function(id) {
+
+        try {
+
+            const response = await fetch(
+                "/api/discover/skip",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+
+                    body: JSON.stringify({
+                        userId: id
+                    })
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+
+                alert(
+                    data.message ||
+                    "تعذر تخطي هذا الشخص."
+                );
+
+                return;
+            }
+
+            currentIndex++;
+
+            renderSuggestions();
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(
+                "تعذر الاتصال بالسيرفر."
+            );
+        }
+    };
+
+
+    /* =========================
+       تراجع
+    ========================= */
+
+    window.undoPerson = async function() {
+
+        try {
+
+            const response = await fetch(
+                "/api/discover/undo",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    }
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+
+                alert(
+                    data.message ||
+                    "تعذر تنفيذ التراجع."
+                );
+
+                return;
+            }
+
+            if (!data.skippedUserId) {
+
+                alert(
+                    "لا يوجد شخص يمكن التراجع عنه حاليًا."
+                );
+
+                return;
+            }
+
+            const skippedUserId =
+                Number(data.skippedUserId);
+
+            const index =
+                suggestions.findIndex(
+                    person =>
+                        Number(person.id) === skippedUserId
+                );
+
+            if (index !== -1) {
+
+                currentIndex = index;
+
+                renderSuggestions();
+
+                return;
+            }
+
+            const discoverResponse =
+                await fetch(
+                    "/api/discover",
+                    {
+                        headers: {
+                            "Authorization":
+                                `Bearer ${token}`
+                        }
+                    }
+                );
+
+            const discoverResult =
+                await discoverResponse.json();
+
+            if (
+                !discoverResponse.ok ||
+                !discoverResult.success
+            ) {
+
+                alert(
+                    "تم التراجع، لكن تعذر إعادة تحميل الشخص."
+                );
+
+                return;
+            }
+
+            suggestions =
+                discoverResult.suggestions || [];
+
+            const restoredIndex =
+                suggestions.findIndex(
+                    person =>
+                        Number(person.id) === skippedUserId
+                );
+
+            if (restoredIndex !== -1) {
+
+                currentIndex = restoredIndex;
+
+                renderSuggestions();
+
+            } else {
+
+                alert(
+                    "تم التراجع، لكن الشخص غير متاح حاليًا."
+                );
+            }
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(
+                "تعذر الاتصال بالسيرفر."
+            );
+        }
+    };
+
+
+    /* =========================
+       تعزيز
+    ========================= */
+
+    window.boostPerson = function(id) {
+
+        alert(
+            "ميزة التعزيز سيتم تجهيزها لاحقًا."
+        );
+    };
+
+
+    function escapeHtml(value) {
+
+        return String(value)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    }
+
+    });
+</script>
+
+<script src="js/notifications.js"></script>
+<script src="js/push.js"></script>
+</html>
+

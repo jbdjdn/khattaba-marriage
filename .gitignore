@@ -1,0 +1,12 @@
+node_modules/
+.gradle/
+android/.gradle/
+android/build/
+android/app/build/
+backend/data/*.db
+backend/logs/
+.env
+*.keystore
+*.jks
+backend/data/vapid.json
+*.backup
